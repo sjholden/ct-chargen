@@ -25,3 +25,4 @@ skip_files:
 - ^(.*/)?\.project$
 - ^(.*/)?\.pydevproject$
 - env/
+- test/

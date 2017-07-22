@@ -13,7 +13,7 @@ gcs.set_default_retry_params(gcs.RetryParams(initial_delay=0.2,
                                           backoff_factor=2,
                                           max_retry_period=15)
                              )
-GCS_BUCKET = '/' + os.environ.get('BUCKET_NAME', app_identity.get_default_gcs_bucket_name())
+GCS_BUCKET = '/' + (os.environ.get('BUCKET_NAME') or app_identity.get_default_gcs_bucket_name())
 
 # stats
 STR=0
@@ -173,8 +173,17 @@ def numberToOrdinal(number):
         return '%dth' % (number,)
         
 class Character(object):
-    def __init__(self):
-        """Create a character, by rolling the stats."""
+    def __init__(self, fixRolls=None):
+        """Create a character, by rolling the stats.
+        
+        If fixRolls is not None it must be a list of single die roll results,
+        they will be used as the first die results with random rolls being
+        used once they are exhausted. 
+        """
+        if fixRolls:
+            self.cheat = [x for x in fixRolls]
+        else:
+            self.cheat = None
         self.charid = str(uuid.uuid4())
         self.history = []
         self.rolllog = []
@@ -282,13 +291,15 @@ class Character(object):
     def toCharacterSheet(self):
         """create a text character sheet, ala an index card."""
         title = []
+        if self.cheat is not None:
+            title.append('Cheating')
         if self.dead:
             title.append('Deceased')
         if self.retired:
             title.append('Retired')
         title.append(CAREER_MEMBER_NAMES[self.career])
         if self.rank:
-            title.append(RANKS[self.career][self.rank])
+            title.append(RANKS[self.career][self.rank-1])
         title = ' '.join([x for x in title if x])
         upp = ''.join([toHexStr(x) for x in self.stats])
         age = 'Age ' + str(self.age)
@@ -653,7 +664,10 @@ class Character(object):
         """
         total = 0
         for _ in range(count):
-            total = total + random.randint(1,6)
+            if self.cheat:
+                total += self.cheat.pop(0)
+            else:
+                total += random.randint(1,6)
         dm = 0
         if dms is not None:
             for bonus, stat, cutoff in dms:
