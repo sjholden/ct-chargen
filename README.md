@@ -20,5 +20,6 @@ Note that rolled characters are all stored on the associated cloud storage - I h
 
 ## AppEngine Notes
 
-Requires cloudstorage to be installed in lib in the deploy per https://cloud.google.com/appengine/docs/standard/python/googlecloudstorageclient/setting-up-cloud-storage
+* Requires cloudstorage to be installed in lib in the deploy per https://cloud.google.com/appengine/docs/standard/python/googlecloudstorageclient/setting-up-cloud-storage
+* Drop a favicon.ico in static too.
 
