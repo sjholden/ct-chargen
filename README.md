@@ -13,7 +13,7 @@ Note that rolled characters are all stored on the associated cloud storage - I h
 
 ## Known Issues
 
-* Basically still untested.
+* Prior Service Table has tests, but that's all...
 * Mustering out benefit roll DMs are "may add" in the rules, they are always used here which is bad if a Low Psg is worth more than Social (say your Social is already F).
 * Doesn't provide any information on how many skill rolls or mustering out rolls are left to roll (it is derivable from the Roll History and a rule book though).
 * Doesn't provide feedback on what changes have been made, for example there's no indication that Strength was increased or that a skill was gained aside from the numbers/text actually changing (again it is derivable from the Roll History and a rule book).
