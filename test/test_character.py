@@ -58,9 +58,28 @@ class Test(unittest.TestCase):
                 self.assertEqual(char.career, character.OTHER)
             else:
                 self.assertEqual(char.career, character.NAVY)
-                
-                        
-                    
-        
+
+    def testSurvivalRolls(self):
+        """Test the survival rolls."""
+        for career, survival, dmstat, dmnum, in ((character.NAVY, 5, character.INT, 7),
+                                                 (character.MARINES, 6, character.END, 8),
+                                                 (character.ARMY, 5, character.EDU, 6),
+                                                 (character.SCOUTS, 7, character.END, 9),
+                                                 (character.MERCHANTS, 5, character.INT, 7),
+                                                 (character.OTHER, 5, character.INT, 9)):
+            for statroll in self._getAll2DSums():
+                for survivalroll in self._getAll2DSums():
+                    statrolls = [1,1,1,1,1,1,1,1,1,1,1,1]
+                    statrolls[dmstat*2:dmstat*2+2] = statroll
+                    char = character.Character(fixRolls=statrolls + [6,6] + survivalroll)
+                    char.selectCareer(career)
+                    survivalsum = sum(survivalroll)
+                    if sum(statroll) >= dmnum:
+                        survivalsum += 2
+                    if survivalsum >= survival:
+                        self.assertFalse(char.dead)
+                    else:
+                        self.assertTrue(char.dead)
+    
     def _getAll2DSums(self):
         return [[1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6]]
