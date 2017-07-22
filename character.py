@@ -597,17 +597,17 @@ class Character(object):
         if self.age >= 66:
             self.doAgingSavingThrow(STR, 9, -2)
             self.doAgingSavingThrow(DEX, 9, -2)
-            self.doAgingSavingThrow(EDU, 9, -2)
+            self.doAgingSavingThrow(END, 9, -2)
             self.doAgingSavingThrow(INT, 9, -1)
         elif self.age >= 50:
             self.doAgingSavingThrow(STR, 9, -1)
             self.doAgingSavingThrow(DEX, 8, -1)
-            self.doAgingSavingThrow(EDU, 9, -1)
+            self.doAgingSavingThrow(END, 9, -1)
         elif self.age >= 34:
             self.doAgingSavingThrow(STR, 8, -1)
             self.doAgingSavingThrow(DEX, 7, -1)
-            self.doAgingSavingThrow(EDU, 8, -1)
-        for stat in (STR, DEX, EDU, INT):
+            self.doAgingSavingThrow(END, 8, -1)
+        for stat in (STR, DEX, END, INT):
             if self.stats[stat] <= 0:
                 agingCrisis = True
                 deathSave = self.rollDice("Aging crisis (" + STAT_NAMES[stat] + ") death save", 2)
