@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
+<script src="{{ url_for('static', filename='chargen.js') }}"></script>
+</head>
+<body>
+<h1>Classic Traveller Chargen</h1>
+<hr />
+<input type="hidden" id="charid" value="{{charid}}" />
+<table id="character_sheet">
+	<tr>
+		<th><span class="label">UPP:</span></th>
+		<td>
+	<table class="upp_table">
+		<tr>
+			<th>Strength</th>
+			<th>Dexterity</th>
+			<th>Endurance</th>
+			<th>Intelligence</th>
+			<th>Education</th>
+			<th>Social</th>
+		</tr>
+		<tr>
+			<td><span id="strength">-</span></td>
+			<td><span id="dexterity">-</span></td>
+			<td><span id="endurance">-</span></td>
+			<td><span id="intelligence">-</span></td>
+			<td><span id="education">-</span></td>
+			<td><span id="social">-</span></td>
+		</tr> 
+	</table>
+		</td>
+	</tr>
+	<tr>
+		<th><span class="label">Age:</span></th>
+		<td><span id="age">-</span></td>
+	</tr>
+	<tr id="careerrow">
+		<th><span class="label">Service:</span></th>
+		<td><span id="career">-</span></td>
+	</tr>
+	<tr id="rankrow">
+		<th><span class="label">Rank:</span></th>
+		<td><span id="rank">-</span></td>
+	</tr>
+	<tr id="termsrow">
+		<th><span class="label">Terms:</span></th>
+		<td><span id="terms">-</span></td>
+	</tr>
+	<tr id="skillsrow">
+		<th><span class="label">Skills:</span></th>
+		<td><span id="skills"></span></td>
+	</tr>
+	<tr id="possessionsrow">
+		<th><span class="label">Benefits:</span></th>
+		<td><span id="possessions"></span></td>
+	</tr>
+	<tr id="creditsrow">
+		<th><span class="label">Credits:</span></th>
+		<td><span id="credits"></span></td>
+	</tr>
+</table>
+
+<input type="button" id="newcharacter" value="New Character" onclick="newCharacter()"/>
+<div id="inputarea"></div>
+
+<table id="history">
+	<tr>
+		<th class="history_label">Service History</th>
+		<th class="roll_label">Die Rolls</th>
+	</tr>
+	<tr>
+		<td><span id="historytext"></span></td>
+		<td><span id="dierollhistory"></span></td>
+	</tr>
+</table>
+
+</body>
+</html>
+
+
+			
