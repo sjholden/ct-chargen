@@ -80,6 +80,27 @@ class Test(unittest.TestCase):
                         self.assertFalse(char.dead)
                     else:
                         self.assertTrue(char.dead)
-    
+
+    def testCommissionRolls(self):
+        for career, commission, dmstat, dmnum in ((character.NAVY, 10, character.SOC, 9),
+                                                  (character.MARINES, 9, character.EDU, 7),
+                                                  (character.ARMY, 5, character.END, 7),
+                                                  (character.MERCHANTS, 4, character.INT, 6)):
+            for statroll in self._getAll2DSums():
+                for commissionroll in self._getAll2DSums():
+                    statrolls = [1,1,1,1,1,1,1,1,1,1,1,1]
+                    statrolls[dmstat*2:dmstat*2+2] = statroll
+                    char = character.Character(fixRolls=statrolls + [6,6,6,6] + commissionroll + [1,1])
+                    char.selectCareer(career)
+                    commissionsum = sum(commissionroll)
+                    if sum(statroll) >= dmnum:
+                        commissionsum += 1
+                    if commissionsum >= commission:
+                        self.assertEqual(char.rank, 1)
+                    else:
+                        self.assertEqual(char.rank, 0)
+
+
+             
     def _getAll2DSums(self):
         return [[1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6]]
