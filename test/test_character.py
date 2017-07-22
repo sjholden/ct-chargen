@@ -82,6 +82,7 @@ class Test(unittest.TestCase):
                         self.assertTrue(char.dead)
 
     def testCommissionRolls(self):
+        """Test the commission rolls."""
         for career, commission, dmstat, dmnum in ((character.NAVY, 10, character.SOC, 9),
                                                   (character.MARINES, 9, character.EDU, 7),
                                                   (character.ARMY, 5, character.END, 7),
@@ -100,6 +101,25 @@ class Test(unittest.TestCase):
                     else:
                         self.assertEqual(char.rank, 0)
 
+    def testPromotionRolls(self):
+        """Test the promition rolls."""
+        for career, promotion, dmstat, dmnum in ((character.NAVY, 8, character.EDU, 8),
+                                                  (character.MARINES, 9, character.SOC, 8),
+                                                  (character.ARMY, 6, character.EDU, 7),
+                                                  (character.MERCHANTS, 10, character.INT, 9)):
+            for statroll in self._getAll2DSums():
+                for promotionroll in self._getAll2DSums():
+                    statrolls = [1,1,1,1,1,1,1,1,1,1,1,1]
+                    statrolls[dmstat*2:dmstat*2+2] = statroll
+                    char = character.Character(fixRolls=statrolls + [6,6,6,6,6,6] + promotionroll)
+                    char.selectCareer(career)
+                    promotionsum = sum(promotionroll)
+                    if sum(statroll) >= dmnum:
+                        promotionsum += 1
+                    if promotionsum >= promotion:
+                        self.assertEqual(char.rank, 2)
+                    else:
+                        self.assertEqual(char.rank, 1)
 
              
     def _getAll2DSums(self):
