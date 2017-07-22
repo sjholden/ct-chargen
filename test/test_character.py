@@ -121,6 +121,39 @@ class Test(unittest.TestCase):
                     else:
                         self.assertEqual(char.rank, 1)
 
-             
+    def testReenlist(self):
+        """Test the reenlist rolls."""
+        stats = [1,1,1,1,1,1,1,1,1,1,1,1]
+        enlist = [6,6]
+        survive = [6,6]
+        commission= [1,1]
+        twoskillrolls = [1,1]
+        for career, reenlist in ((character.NAVY, 6), (character.MARINES, 6), (character.ARMY, 7),
+                                 (character.SCOUTS, 3), (character.MERCHANTS, 4), (character.OTHER, 5)):
+            for reenlistroll in self._getAll2DSums():
+                rolls = stats + enlist + survive
+                if career not in (character.SCOUTS, character.OTHER):
+                    rolls = rolls + commission
+                # try to reenlist
+                char = character.Character(fixRolls=rolls+twoskillrolls+reenlistroll)
+                char.selectCareer(career)
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectReEnlist('Yes')
+                if sum(reenlistroll) >= reenlist:
+                    self.assertEqual(char.terms, 2)
+                else:
+                    self.assertEqual(char.terms, 1)
+                # try not to reenlist
+                char = character.Character(fixRolls=rolls+twoskillrolls+reenlistroll)
+                char.selectCareer(career)
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectReEnlist('No')
+                if sum(reenlistroll) == 12:
+                    self.assertEqual(char.terms, 2)
+                else:
+                    self.assertEqual(char.terms, 1)
+
     def _getAll2DSums(self):
         return [[1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6]]
