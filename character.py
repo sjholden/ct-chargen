@@ -29,11 +29,11 @@ NAVY = 'Navy'
 MARINES = 'Marines'
 ARMY = 'Army'
 SCOUTS = 'Scouts'
-MERCHANT = 'Merchant'
+MERCHANTS = 'Merchants'
 OTHER = 'Other'
-CAREER_MEMBER_NAMES = {NAVY: 'Navy', MARINES: 'Marine', ARMY: 'Army', SCOUTS: 'Scout', MERCHANT: 'Merchant', OTHER: ''}
+CAREER_MEMBER_NAMES = {NAVY: 'Navy', MARINES: 'Marine', ARMY: 'Army', SCOUTS: 'Scout', MERCHANTS: 'Merchant', OTHER: ''}
 # The various tables
-DRAFT_TABLE = [NAVY, MARINES, ARMY, SCOUTS, MERCHANT, OTHER]
+DRAFT_TABLE = [NAVY, MARINES, ARMY, SCOUTS, MERCHANTS, OTHER]
 SERVICE_TABLE = {
     NAVY: {'enlistment': (8, [(1, INT, 8), (2, EDU, 9)]),
              'survival': (5, [(2, INT, 7)]),
@@ -57,7 +57,7 @@ SERVICE_TABLE = {
                'survival': (7, [(2, END, 9)]),
                'reenlist': (3, []),
                },
-    MERCHANT: {'enlistment': (7, [(1, STR, 7), (2, INT, 6)]),
+    MERCHANTS: {'enlistment': (7, [(1, STR, 7), (2, INT, 6)]),
                   'survival': (5, [(2, INT, 7)]),
                   'commission': (4, [(1, INT, 6)]),
                   'promotion': (10, [(1, INT, 9)]),
@@ -72,27 +72,27 @@ RANKS = {
     NAVY: ['Ensign', 'Lieutenant', 'Lieutenant Commander', 'Commander', 'Captain', 'Admiral'],
     MARINES: ['Lieutenant', 'Captain', 'Force Commander', 'Lieutenant Colonel', 'Colonel', 'Brigadier'],
     ARMY: ['Lieutenant', 'Captain', 'Major', 'Lieutenant Colonel', 'Colonel', 'General'],
-    MERCHANT: ['4th Officer', '3rd Officer', '2nd Officer', '1st Officer', 'Captain'],
+    MERCHANTS: ['4th Officer', '3rd Officer', '2nd Officer', '1st Officer', 'Captain'],
     }
 JOIN_SKILLS = {
     NAVY: [],
     MARINES: ['Cutlass'],
     ARMY: ['Rifle'],
     SCOUTS: ['Pilot'],
-    MERCHANT: [],
+    MERCHANTS: [],
     OTHER: [],
     }
 COMMISSION_SKILLS = {
     NAVY: [],
     MARINES: ['Revolver'],
     ARMY: ['SMG'],
-    MERCHANT: [],
+    MERCHANTS: [],
     }
 RANK_SKILLS = {
     NAVY: [[], [], [], [], ["+1 Social"], ["+1 Social"]],
     MARINES: [[], [], [], [], [], []],
     ARMY: [[], [], [], [], [], []],
-    MERCHANT: [[], [], [], ["Pilot"], [], []],
+    MERCHANTS: [[], [], [], ["Pilot"], [], []],
     }
 SKILL_TABLE_NAMES = ['Personal Development', 'Service Skills', 'Advanced Education', 'Advanced Education 2']
 SKILL_TABLES = {
@@ -120,7 +120,7 @@ SKILL_TABLES = {
         'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronic', 'Jack-of-all-Trades', 'Gunnery', 'Medical'],
         'Advanced Education 2': [None, 'Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Jack-of-all-Trades']
         },
-    MERCHANT: {
+    MERCHANTS: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', '+1 Stren', 'Blade Cbt', 'Bribery'],
         'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Jack-of-all-Trades', 'Steward', 'Electronics', 'Gun Cbt'],
         'Advanced Education': [None, 'Streetwise', 'Mechanical', 'Electronic', 'Navigation', 'Gunnery', 'Medical'],
@@ -141,7 +141,7 @@ CASH_TABLE = {
     MARINES: (2000, 5000, 5000, 10000, 20000, 30000, 40000),
     ARMY: (2000, 5000, 10000, 10000, 10000, 20000, 30000),
     SCOUTS: (20000, 20000, 30000, 30000, 50000, 50000, 50000),
-    MERCHANT: (1000, 5000, 10000, 20000, 20000, 40000, 40000),
+    MERCHANTS: (1000, 5000, 10000, 20000, 20000, 40000, 40000),
     OTHER: (1000, 5000, 10000, 10000, 10000, 50000, 100000),
     }
 BENEFITS_TABLE = {
@@ -149,7 +149,7 @@ BENEFITS_TABLE = {
     MARINES: ('Low Psg', '+2 Intel', '+1 Educ', 'Blade', "Travellers'", 'High Psg', '+2 Social'),
     ARMY: ('Low Psg', '+1 Intel', '+2 Educ', 'Gun', 'High Psg', 'Mid Psg', '+1 Social'),
     SCOUTS: ('Low Psg', '+2 Intel', '+2 Educ', 'Blade', 'Gun', 'Scout Ship'),
-    MERCHANT: ('Low Psg', '+1 Intel', '+1 Educ', 'Gun', 'Blade', 'Low Psg', 'Free Trader'),
+    MERCHANTS: ('Low Psg', '+1 Intel', '+1 Educ', 'Gun', 'Blade', 'Low Psg', 'Free Trader'),
     OTHER: ('Low Psg', '+1 Intel', '+1 Educ', 'Gun', 'High Psg', None),
     }
 
@@ -343,7 +343,7 @@ class Character(object):
         else:
             self.addHistory("Rejected by " + career)
             draftRoll = self.rollDice('Draft', 1)
-            career = DRAFT_TABLE[draftRoll]
+            career = DRAFT_TABLE[draftRoll-1]
             self.addHistory("Drafted into " + career)
             self.career = career
             self.doTerm(firstTerm=True, drafted=True)

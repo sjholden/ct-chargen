@@ -15,3 +15,11 @@ class Test(unittest.TestCase):
         self.assertEqual(char.possessions, {})
         self.assertEqual(char.credits, 0)
         self.assertEqual(char.rank, 0)
+
+    def testDraft(self):
+        """Test the draft rolls are correct."""
+        for d, c in ((1, character.NAVY), (2,character.MARINES), (3, character.ARMY),
+                  (4, character.SCOUTS), (5, character.MERCHANTS), (6, character.OTHER)):
+            char = character.Character(fixRolls=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,d,6,6])
+            char.selectCareer(character.NAVY)
+            self.assertEqual(char.career, c)
