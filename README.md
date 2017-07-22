@@ -5,6 +5,12 @@ A character roller for classic traveller, designed to run on Google's AppEngine 
 
 All the rolling is performed server side, other than generating over and over it shouldn't be possible for the player to "cheat" - there's no undo or reloading to retry a roll.
 
+## Current Deployment
+
+A running instance is available at https://ct-chargen.appspot.com/
+
+Note that rolled characters are all stored on the associated cloud storage - I have access to them though there's no way to enter private data anyway. They may also be deleted at any time which would break any /sheet/ urls.
+
 ## Known Issues
 
 * Basically still untested.
