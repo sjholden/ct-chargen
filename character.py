@@ -423,7 +423,7 @@ class Character(object):
         reenlistRoll = self.rollDice("Reenlist", 2)
         if reenlistRoll == 12 and decision == 'No':
             self.addHistory("Mandatory reenlistment for %s term" % (numberToOrdinal(self.terms+1),))
-            decision = 'Yes'
+            self.doTerm()
         elif decision == 'No':
             if self.terms >= 5:
                 self.addHistory('Retired after %s term' % (numberToOrdinal(self.terms),))
