@@ -556,7 +556,7 @@ class Character(object):
                     self.addSkill(skill)
             if promoted:
                 skillRolls += 1
-                for skill in RANK_SKILLS[self.career][self.rank]:
+                for skill in RANK_SKILLS[self.career][self.rank-1]:
                     self.addSkill(skill)
             self.skillrollsleft = skillRolls
             self.next_step = 'select_skill_table'
