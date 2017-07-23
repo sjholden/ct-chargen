@@ -6,6 +6,7 @@ import character
 
 class Test(unittest.TestCase):
     def testSimpleCreation(self):
+        """Simple blank character test."""
         char = character.Character(fixRolls=[1,1,6,6,3,4,5,4,2,3,4,4])
         self.assertEqual(char.stats, [2, 12, 7, 9, 5, 8])
         self.assertEqual(char.age, 18)
@@ -102,7 +103,7 @@ class Test(unittest.TestCase):
                         self.assertEqual(char.rank, 0)
 
     def testPromotionRolls(self):
-        """Test the promition rolls."""
+        """Test the promotion rolls."""
         for career, promotion, dmstat, dmnum in ((character.NAVY, 8, character.EDU, 8),
                                                   (character.MARINES, 9, character.SOC, 8),
                                                   (character.ARMY, 6, character.EDU, 7),
@@ -155,5 +156,45 @@ class Test(unittest.TestCase):
                 else:
                     self.assertEqual(char.terms, 1)
 
+    def testRanks(self):
+        """Test rank progression."""
+        stats = [1,1,1,1,1,1,1,1,1,1,1,1]
+        enlist = [6,6]
+        survive = [6,6]
+        commission= [6,6]
+        promotionno = [1,1]
+        promotionyes = [6,6]
+        skillroll = [1]
+        aging = [6,6,6,6,6,6]
+        rolls = (stats +
+                 enlist + survive + commission + promotionno + skillroll*3 +
+                 (enlist + survive + promotionyes + skillroll*2) * 2 +
+                 (enlist + survive + promotionyes + skillroll*2 + aging) * 4)
+        # do navy
+        for career, ranks in ((character.NAVY, ('Ensign', 'Lieutenant', 'Lieutenant Commander', 'Commander', 'Captain', 'Admiral')),
+                              (character.MARINES, ('Lieutenant', 'Captain', 'Force Commander', 'Lieutenant Colonel', 'Colonel', 'Brigadier')),
+                              (character.ARMY, ('Lieutenant', 'Captain', 'Major', 'Lieutenant Colonel', 'Colonel', 'General')),
+                              (character.MERCHANTS, ('4th Officer', '3rd Officer', '2nd Officer', '1st Officer', 'Captain'))):            
+            char = character.Character(fixRolls=rolls)
+            char.selectCareer(career)
+            # first term had an extra skill
+            self.assertEqual(char.rank, 1)
+            self.assertEqual(char.convertForClient()['rank'], ranks[0])
+            char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+            char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+            char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+            # ither terms have skill for term plus promotion.
+            for i in range(1, len(ranks)):
+                char.selectReEnlist('Yes')
+                self.assertEqual(char.rank, i+1)
+                self.assertEqual(char.convertForClient()['rank'], ranks[i])
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+            # make sure there's not an extra rank on the end.
+            char.selectReEnlist('Yes')
+            self.assertEqual(char.rank, len(ranks))
+            self.assertEqual(char.convertForClient()['rank'], ranks[-1])           
+            
+                
     def _getAll2DSums(self):
         return [[1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6]]
