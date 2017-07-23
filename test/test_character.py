@@ -197,7 +197,7 @@ class Test(unittest.TestCase):
 
     def testMusteringOut(self):
         """Test the mustering out rolls."""
-        stats = [1,1,1,1,1,1,1,1,1,1,1,1]        
+        stats = [1,1,1,1,1,1,1,1,1,1,1,1]
         enlist = [6,6]
         survive = [6,6]
         commission= [1,1]
@@ -314,11 +314,11 @@ class Test(unittest.TestCase):
                 # cheat gambling skill to get +1 DM
                 char.addSkill('Gambling')
                 char.selectMusterTable('Cash')
-                self.assertEqual(char.credits, cash[i+1])                
+                self.assertEqual(char.credits, cash[i+1])
 
     def testMusteringOutMultiples(self):
         """Test the blade and gun as skills, plus the paying off of the free trader."""
-        stats = [1,1,1,1,1,1,1,1,1,1,1,1]        
+        stats = [1,1,1,1,1,1,1,1,1,1,1,1]
         enlist = [6,6]
         survive = [6,6]
         commission= [6,6]
@@ -383,6 +383,131 @@ class Test(unittest.TestCase):
         self.assertNotIn('Free Trader (20 years paid off)', char.possessions)
         self.assertNotIn('Free Trader (30 years paid off)', char.possessions)
         self.assertEqual(char.possessions['Free Trader (paid off)'], 1)
-                
+
+    def testSkillTables(self):
+        """Test the skill tables."""
+        stats = [4,4,4,4,4,4,4,4,4,4,4,4]
+        self._checkSkillTable(character.NAVY, 'Personal Development', ['+1 Stren', '+1 Dext', '+1 Endur', '+1 Intel', '+1 Educ', '+1 Social'], stats)
+        self._checkSkillTable(character.NAVY, 'Service Skills', ["Ship's Boat", 'Vacc Suit', 'Forward Observer', 'Gunnery', 'Blade Cbt', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.NAVY, 'Advanced Education', ['Vacc Suit', 'Mechanical', 'Electronic', 'Engineering', 'Gunnery', 'Jack-of-all-Trades'], stats)
+        self._checkSkillTable(character.NAVY, 'Advanced Education 2', ['Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin'], stats)
+        self._checkSkillTable(character.MARINES, 'Personal Development', ['+1 Stren', '+1 Dext', '+1 Endur', 'Gambling', 'Brawling', 'Blade Cbt'], stats)
+        self._checkSkillTable(character.MARINES, 'Service Skills', ['Vehicle', 'Vacc Suit', 'Blade Cbt', 'Gun Cbt', 'Blade Cbt', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.MARINES, 'Advanced Education', ['Vehicle', 'Mechanical', 'Electronic', 'Tactics', 'Blade Cbt', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.MARINES, 'Advanced Education 2', ['Medical', 'Tactics', 'Tactics', 'Computer', 'Leader', 'Admin'], stats)
+        self._checkSkillTable(character.ARMY, 'Personal Development', ['+1 Stren', '+1 Dext', '+1 Endur', 'Gambling', '+1 Educ', 'Brawling'], stats)
+        self._checkSkillTable(character.ARMY, 'Service Skills', ['Vehicle', 'Air/Raft', 'Gun Cbt', 'Forward Observer', 'Blade Cbt', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.ARMY, 'Advanced Education', ['Vehicle', 'Mechanical', 'Electronic', 'Tactics', 'Blade Cbt', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.ARMY, 'Advanced Education 2', ['Medical', 'Tactics', 'Tactics', 'Computer', 'Leader', 'Admin'], stats)
+        self._checkSkillTable(character.SCOUTS, 'Personal Development', ['+1 Stren', '+1 Dext', '+1 Endur', '+1 Intel', '+1 Educ', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.SCOUTS, 'Service Skills', ['Vehicle', 'Vacc Suit', 'Mechanical', 'Navigation', 'Electronics', 'Jack-of-all-Trades'], stats)
+        self._checkSkillTable(character.SCOUTS, 'Advanced Education', ['Vehicle', 'Mechanical', 'Electronic', 'Jack-of-all-Trades', 'Gunnery', 'Medical'], stats)
+        self._checkSkillTable(character.SCOUTS, 'Advanced Education 2', ['Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Jack-of-all-Trades'], stats)
+        self._checkSkillTable(character.MERCHANTS, 'Personal Development', ['+1 Stren', '+1 Dext', '+1 Endur', '+1 Stren', 'Blade Cbt', 'Bribery'], stats)
+        self._checkSkillTable(character.MERCHANTS, 'Service Skills', ['Vehicle', 'Vacc Suit', 'Jack-of-all-Trades', 'Steward', 'Electronic', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.MERCHANTS, 'Advanced Education', ['Streetwise', 'Mechanical', 'Electronic', 'Navigation', 'Gunnery', 'Medical'], stats)
+        self._checkSkillTable(character.MERCHANTS, 'Advanced Education 2', ['Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin'], stats)
+        self._checkSkillTable(character.OTHER, 'Personal Development', ['+1 Stren', '+1 Dext', '+1 Endur', 'Blade Cbt', 'Brawling', '-1 Social'], stats)
+        self._checkSkillTable(character.OTHER, 'Service Skills', ['Vehicle', 'Gambling', 'Brawling', 'Bribery', 'Blade Cbt', 'Gun Cbt'], stats)
+        self._checkSkillTable(character.OTHER, 'Advanced Education', ['Streetwise', 'Mechanical', 'Electronic', 'Gambling', 'Brawling', 'Forgery'], stats)
+        self._checkSkillTable(character.OTHER, 'Advanced Education 2', ['Medical', 'Forgery', 'Electronics', 'Computer', 'Streetwise', 'Jack-of-all-Trades'], stats)
+
+    def testAdvancedEducaton2Cutoff(self):
+        """Test that Advanced Education 2 only works at EDU 8+."""
+        for statroll in self._getAll2DSums():
+            stats = statroll * 6
+            if sum(statroll) < 8:
+                self._checkSkillTable(character.NAVY, 'Advanced Education 2', ['Vacc Suit', 'Mechanical', 'Electronic', 'Engineering', 'Gunnery', 'Jack-of-all-Trades'], stats)
+                self._checkSkillTable(character.MARINES, 'Advanced Education 2', ['Vehicle', 'Mechanical', 'Electronic', 'Tactics', 'Blade Cbt', 'Gun Cbt'], stats)
+                self._checkSkillTable(character.ARMY, 'Advanced Education 2', ['Vehicle', 'Mechanical', 'Electronic', 'Tactics', 'Blade Cbt', 'Gun Cbt'], stats)
+                self._checkSkillTable(character.SCOUTS, 'Advanced Education 2', ['Vehicle', 'Mechanical', 'Electronic', 'Jack-of-all-Trades', 'Gunnery', 'Medical'], stats)
+                self._checkSkillTable(character.MERCHANTS, 'Advanced Education 2', ['Streetwise', 'Mechanical', 'Electronic', 'Navigation', 'Gunnery', 'Medical'], stats)
+                self._checkSkillTable(character.OTHER, 'Advanced Education 2', ['Streetwise', 'Mechanical', 'Electronic', 'Gambling', 'Brawling', 'Forgery'], stats)
+            else:
+                self._checkSkillTable(character.NAVY, 'Advanced Education 2', ['Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin'], stats)
+                self._checkSkillTable(character.MARINES, 'Advanced Education 2', ['Medical', 'Tactics', 'Tactics', 'Computer', 'Leader', 'Admin'], stats)
+                self._checkSkillTable(character.ARMY, 'Advanced Education 2', ['Medical', 'Tactics', 'Tactics', 'Computer', 'Leader', 'Admin'], stats)
+                self._checkSkillTable(character.SCOUTS, 'Advanced Education 2', ['Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Jack-of-all-Trades'], stats)
+                self._checkSkillTable(character.MERCHANTS, 'Advanced Education 2', ['Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin'], stats)
+                self._checkSkillTable(character.OTHER, 'Advanced Education 2', ['Medical', 'Forgery', 'Electronics', 'Computer', 'Streetwise', 'Jack-of-all-Trades'], stats)
+
+    def testRankAndServiceSkillsNavy(self):
+        """Test the rank and service skills for Navy."""
+        char = character.Character(fixRolls=[6]*100)
+        char.selectCareer(character.NAVY)
+        for _ in range(4):
+            char.selectSkillTable('Advanced Education 2')
+        for _ in range(3):
+            char.selectReEnlist('Yes')
+            char.selectSkillTable('Advanced Education 2')
+            char.selectSkillTable('Advanced Education 2')
+        self.assertEqual(char.stats[character.SOC], 13)
+        char.selectReEnlist('Yes')
+        self.assertEqual(char.stats[character.SOC], 14)
+
+    def testRankAndServiceSkillsMarine(self):
+        char = character.Character(fixRolls=[1,1]*6+[6,6, 6,6, 1,1, 1,1, 6,6, 6,6, 6,6, 1,1])
+        char.selectCareer(character.MARINES)
+        self.assertEqual(char.skills['Cutlass'], 1)
+        self.assertNotIn('Revolver', char.skills)
+        char.selectSkillTable('Personal Development')
+        char.selectSkillTable('Personal Development')
+        char.selectReEnlist('Yes')
+        self.assertEqual(char.skills['Revolver'], 1)
+
+    def testRankAndServiceSkillsArmy(self):
+        char = character.Character(fixRolls=[1,1]*6+[6,6, 6,6, 1,1, 1,1, 6,6, 6,6, 6,6, 1,1])
+        char.selectCareer(character.ARMY)
+        self.assertEqual(char.skills['Rifle'], 1)
+        self.assertNotIn('SMG', char.skills)
+        char.selectSkillTable('Personal Development')
+        char.selectSkillTable('Personal Development')
+        char.selectReEnlist('Yes')
+        self.assertEqual(char.skills['SMG'], 1)
+
+    def testRankAndServiceSkillsScout(self):
+        """Test the scout tank and service skills."""
+        char = character.Character(fixRolls=[1,1]*6+[6,6]+[6,6])
+        char.selectCareer(character.SCOUTS)
+        self.assertEqual(char.skills['Pilot'], 1)
+
+    def _checkSkillTable(self, career, tablename, expected, statRolls):
+        """Check the results for one skill table."""
+        rolls = statRolls + [6,6,6,6]
+        stats = [statRolls[i]+statRolls[i+1] for i in range(0,12,2)]
+        if career not in (character.SCOUTS, character.OTHER):
+            rolls = rolls + [1,1]
+        for choices in ([1,2], [3,4], [5,6]):
+            char = character.Character(fixRolls=rolls+choices)
+            char.selectCareer(career)
+            for choice in choices:
+                previousSkill = char.skills.get(expected[choice-1], 0)
+                char.selectSkillTable(tablename)
+                if expected[choice-1] == 'Blade Cbt':
+                    char.selectBladeSkillTable('Dagger')
+                    self.assertEqual(char.skills['Dagger'], 1)
+                elif expected[choice-1] == 'Gun Cbt':
+                    char.selectGunSkillTable('Carbine')
+                    self.assertEqual(char.skills['Carbine'], 1)
+                elif expected[choice-1] == 'Vehicle':
+                    char.selectVehicleSkillTable('Helicopter')
+                    self.assertEqual(char.skills['Helicopter'], 1)
+                elif expected[choice-1] == '+1 Stren':
+                    self.assertEqual(char.stats[character.STR], stats[character.STR]+1)
+                elif expected[choice-1] == '+1 Dext':
+                    self.assertEqual(char.stats[character.DEX], stats[character.DEX]+1)
+                elif expected[choice-1] == '+1 Endur':
+                    self.assertEqual(char.stats[character.END], stats[character.END]+1)
+                elif expected[choice-1] == '+1 Intel':
+                    self.assertEqual(char.stats[character.INT], stats[character.INT]+1)
+                elif expected[choice-1] == '+1 Educ':
+                    self.assertEqual(char.stats[character.EDU], stats[character.EDU]+1)
+                elif expected[choice-1] == '+1 Social':
+                    self.assertEqual(char.stats[character.SOC], stats[character.SOC]+1)
+                elif expected[choice-1] == '-1 Social':
+                    self.assertEqual(char.stats[character.SOC], stats[character.SOC]-1)
+                else:
+                    self.assertEqual(char.skills[expected[choice-1]], previousSkill+1)                          
+
     def _getAll2DSums(self):
         return [[1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6]]
