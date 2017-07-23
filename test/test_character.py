@@ -193,8 +193,196 @@ class Test(unittest.TestCase):
             # make sure there's not an extra rank on the end.
             char.selectReEnlist('Yes')
             self.assertEqual(char.rank, len(ranks))
-            self.assertEqual(char.convertForClient()['rank'], ranks[-1])           
-            
+            self.assertEqual(char.convertForClient()['rank'], ranks[-1])
+
+    def testMusteringOut(self):
+        """Test the mustering out rolls."""
+        stats = [1,1,1,1,1,1,1,1,1,1,1,1]        
+        enlist = [6,6]
+        survive = [6,6]
+        commission= [1,1]
+        skillroll = [1]
+        noenlist = [1,1]
+        def checkBenefit(char, benefit):
+            if benefit is None:
+                self.assertEqual(char.stats, [5,2,2,2,2,2])
+                self.assertEqual(len(char.possessions), 0)
+            elif benefit == '+1 Intel':
+                self.assertEqual(char.stats[character.INT], 3)
+            elif benefit == '+2 Intel':
+                self.assertEqual(char.stats[character.INT], 4)
+            elif benefit == '+1 Educ':
+                self.assertEqual(char.stats[character.EDU], 3)
+            elif benefit == '+2 Educ':
+                self.assertEqual(char.stats[character.EDU], 4)
+            elif benefit == '+1 Social':
+                self.assertEqual(char.stats[character.SOC], 3)
+            elif benefit == '+2 Social':
+                self.assertEqual(char.stats[character.SOC], 4)
+            elif benefit == 'Blade':
+                self.assertIn('Dagger', char.possessions)
+            elif benefit == 'Gun':
+                self.assertIn('Rifle', char.possessions)
+            elif benefit == 'TAS':
+                self.assertTrue(char.tasmember)
+            elif benefit == 'Scout Ship':
+                self.assertIn('Scout Ship (on loan)', char.possessions)
+            elif benefit == 'Free Trader':
+                self.assertIn('Free Trader (0 years paid off)', char.possessions)                
+            else:
+                self.assertIn(benefit, char.possessions)
+        # generate two muster out rolls
+        rolls = stats + enlist + survive + commission + skillroll*2 + enlist + survive + commission + skillroll + noenlist
+        otherrolls = stats + enlist + survive + skillroll*2 + enlist + survive + skillroll + noenlist
+        scoutrolls = stats + enlist + survive + skillroll*2 + enlist + survive + skillroll*2 + noenlist
+        for career, benefits, cash in ((character.NAVY,
+                                            ('Low Psg', '+1 Intel', '+2 Educ', 'Blade', 'TAS', 'High Psg', '+2 Social'),
+                                            (1000, 5000, 5000, 10000, 20000, 50000, 50000)),
+                                       (character.MARINES,
+                                            ('Low Psg', '+2 Intel', '+1 Educ', 'Blade', 'TAS', 'High Psg', '+2 Social'),
+                                            (2000, 5000, 5000, 10000, 20000, 30000, 40000)),
+                                       (character.ARMY,
+                                            ('Low Psg', '+1 Intel', '+2 Educ', 'Gun', 'High Psg', 'Mid Psg', '+1 Social'),
+                                            (2000, 5000, 10000, 10000, 10000, 20000, 30000)),
+                                       (character.SCOUTS,
+                                            ('Low Psg', '+2 Intel', '+2 Educ', 'Blade', 'Gun', 'Scout Ship'),
+                                            (20000, 20000, 30000, 30000, 50000, 50000, 50000)),
+                                       (character.MERCHANTS,
+                                            ('Low Psg', '+1 Intel', '+1 Educ', 'Gun', 'Blade', 'Low Psg', 'Free Trader'),
+                                            (1000, 5000, 10000, 20000, 20000, 40000, 40000)),
+                                       (character.OTHER,
+                                            ('Low Psg', '+1 Intel', '+1 Educ', 'Gun', 'High Psg', None),
+                                            (1000, 5000, 10000, 10000, 10000, 50000, 100000)),
+                                       ):
+            for i in range(6):
+                if career == character.SCOUTS:
+                    char = character.Character(fixRolls=scoutrolls+[i+1,i+1])
+                elif career == character.OTHER:
+                    char = character.Character(fixRolls=otherrolls+[i+1,i+1])
+                else:
+                    char = character.Character(fixRolls=rolls+[i+1,i+1])
+                char.selectCareer(career)
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectReEnlist('Yes')
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                if career == character.SCOUTS:
+                    char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectReEnlist('No')
+                char.selectMusterTable('Cash')
+                self.assertEqual(char.credits, cash[i])
+                char.selectMusterTable('Benefits')
+                if benefits[i] == 'Blade':
+                    char.selectBladeBenefit('Dagger')
+                elif benefits[i] == 'Gun':
+                    char.selectGunBenefit('Rifle')
+                checkBenefit(char, benefits[i])
+                char.selectMusterTable('Cash')
+                self.assertEqual(char.credits, cash[i])
+            if career not in (character.SCOUTS, character.OTHER):
+                for i in range(6):
+                    char = character.Character(fixRolls=rolls+[i+1,i+1])
+                    char.selectCareer(career)
+                    char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                    char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                    char.selectReEnlist('Yes')
+                    char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                    char.selectReEnlist('No')
+                    # cheat rank to get +1 DM
+                    char.rank = 5
+                    char.selectMusterTable('Benefits')
+                    if benefits[i+1] == 'Blade':
+                        char.selectBladeBenefit('Dagger')
+                    elif benefits[i] == 'Gun':
+                        char.selectGunBenefit('Rifle')
+                checkBenefit(char, benefits[i+1])
+            for i in range(6):
+                if career == character.SCOUTS:
+                    char = character.Character(fixRolls=scoutrolls+[i+1,i+1])
+                elif career == character.OTHER:
+                    char = character.Character(fixRolls=otherrolls+[i+1,i+1])
+                else:
+                    char = character.Character(fixRolls=rolls+[i+1,i+1])
+                char.selectCareer(career)
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectReEnlist('Yes')
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                if career == character.SCOUTS:
+                    char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+                char.selectReEnlist('No')
+                # cheat gambling skill to get +1 DM
+                char.addSkill('Gambling')
+                char.selectMusterTable('Cash')
+                self.assertEqual(char.credits, cash[i+1])                
+
+    def testMusteringOutMultiples(self):
+        """Test the blade and gun as skills, plus the paying off of the free trader."""
+        stats = [1,1,1,1,1,1,1,1,1,1,1,1]        
+        enlist = [6,6]
+        survive = [6,6]
+        commission= [6,6]
+        promotion = [6,6]
+        skillroll = [1]
+        noenlist = [1,1]
+        aging = [6,6,6,6,6,6]
+        rolls = (stats + enlist + survive + commission + promotion + skillroll*4 +
+                 (enlist + survive + promotion + skillroll*2) * 2 +
+                 (enlist + survive + promotion + skillroll*2 + aging) +
+                 (enlist + survive + skillroll + aging) * 3 +
+                 noenlist)
+        char = character.Character(fixRolls=rolls+[4,4,3,3,6,6,6,6,6,6])
+        char.selectCareer(character.MERCHANTS)
+        for _ in range(4):
+            char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+        char.selectReEnlist('Yes')
+        for _ in range(6):
+            for _ in range(2):
+                char.selectSkillTable(character.SKILL_TABLE_NAMES[0])
+            char.selectReEnlist('Yes')
+        char.selectReEnlist('No')
+
+        char.selectMusterTable('Benefits')
+        char.selectBladeBenefit('Cutlass')
+        self.assertEqual(char.possessions['Cutlass'], 1)
+        char.selectMusterTable('Benefits')
+        char.selectBladeBenefit('Cutlass (skill)')
+        self.assertEqual(char.possessions['Cutlass'], 1)
+        self.assertEqual(char.skills['Cutlass'], 1)
+        char.selectMusterTable('Benfits')
+        char.selectGunBenefit('Shotgun')
+        self.assertEqual(char.possessions['Shotgun'], 1)
+        char.selectMusterTable('Benfits')
+        char.selectGunBenefit('Shotgun (skill)')
+        self.assertEqual(char.possessions['Shotgun'], 1)
+        self.assertEqual(char.skills['Shotgun'], 1)
+        self.assertNotIn('Free Trader (0 years paid off)', char.possessions)
+        char.selectMusterTable('Benfits')
+        self.assertEqual(char.possessions['Free Trader (0 years paid off)'], 1)
+        char.selectMusterTable('Benfits')
+        self.assertNotIn('Free Trader (0 years paid off)', char.possessions)
+        self.assertEqual(char.possessions['Free Trader (10 years paid off)'], 1)
+        char.selectMusterTable('Benfits')
+        self.assertNotIn('Free Trader (0 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (10 years paid off)', char.possessions)
+        self.assertEqual(char.possessions['Free Trader (20 years paid off)'], 1)
+        char.selectMusterTable('Benfits')
+        self.assertNotIn('Free Trader (0 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (10 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (20 years paid off)', char.possessions)
+        self.assertEqual(char.possessions['Free Trader (30 years paid off)'], 1)
+        char.selectMusterTable('Benfits')
+        self.assertNotIn('Free Trader (0 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (10 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (20 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (30 years paid off)', char.possessions)
+        self.assertEqual(char.possessions['Free Trader (paid off)'], 1)
+        char.selectMusterTable('Benfits')
+        self.assertNotIn('Free Trader (0 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (10 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (20 years paid off)', char.possessions)
+        self.assertNotIn('Free Trader (30 years paid off)', char.possessions)
+        self.assertEqual(char.possessions['Free Trader (paid off)'], 1)
                 
     def _getAll2DSums(self):
         return [[1,1], [1,2], [1,3], [1,4], [1,5], [1,6], [2,6], [3,6], [4,6], [5,6], [6,6]]
