@@ -122,7 +122,7 @@ SKILL_TABLES = {
         },
     MERCHANTS: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', '+1 Stren', 'Blade Cbt', 'Bribery'],
-        'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Jack-of-all-Trades', 'Steward', 'Electronics', 'Gun Cbt'],
+        'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Jack-of-all-Trades', 'Steward', 'Electronic', 'Gun Cbt'],
         'Advanced Education': [None, 'Streetwise', 'Mechanical', 'Electronic', 'Navigation', 'Gunnery', 'Medical'],
         'Advanced Education 2': [None, 'Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin']
         },
