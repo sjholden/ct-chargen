@@ -529,7 +529,48 @@ class Test(unittest.TestCase):
             char.selectVehicleSkillTable(vehicle)
             self.assertEqual(char.skills[vehicle], 2)
 
-            
+    def testRetirementPay(self):
+        """Test retirement pay is correct."""
+        stats = [5] * 12
+        firstterm = [5]*10
+        proterm = [6,6,6,6,6,6,5,5]
+        nonproterm = [6,6,6,6,5]
+        aging = [6,6, 6,6, 6,6]
+        aging2 = aging + [6,6]
+        rolls = [5] * 1000
+        for terms in range(1, 20):
+            rolls = stats + firstterm
+            i = 1
+            while i < terms and i < 4:
+                rolls = rolls + proterm
+                i += 1
+            while i < terms and i < 5:
+                rolls = rolls + proterm + aging
+                i += 1
+            while i < terms and i < 12:
+                rolls = rolls + nonproterm + aging
+                i += 1
+            while i < terms:
+                rolls = rolls + nonproterm + aging2
+                i += 1
+            rolls = rolls +  [1,1] + [5]*1000
+            char = character.Character(fixRolls=rolls)
+            char.selectCareer(character.NAVY)
+            while char.next_step == 'select_skill_table':
+                char.selectSkillTable('Personal Development')
+            for term in range(1, terms):
+                char.selectReEnlist('Yes')
+                while char.next_step == 'select_skill_table':
+                    char.selectSkillTable('Personal Development')
+            char.selectReEnlist('No')
+            while char.next_step == 'select_muster_table':
+                char.selectMusterTable('Benefits')
+            if terms >= 5:
+                self.assertTrue(char.retired)
+                self.assertIn('%d,000/yr Retirement Pay' % (4 + 2*(terms-5)), char.possessions)
+            else:
+                self.assertFalse(char.retired)
+
     def _checkSkillTable(self, career, tablename, expected, statRolls):
         """Check the results for one skill table."""
         rolls = statRolls + [6,6,6,6]
