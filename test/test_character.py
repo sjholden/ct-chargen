@@ -471,6 +471,65 @@ class Test(unittest.TestCase):
         char.selectCareer(character.SCOUTS)
         self.assertEqual(char.skills['Pilot'], 1)
 
+    def testBladeOptions(self):
+        """Test the blade options for skills and benefits."""
+        blades = ['Dagger', 'Blade', 'Foil', 'Sword', 'Cutlass', 'Broadsword', 'Bayonet', 'Spear', 'Halberd', 'Pike', 'Cudgel']
+        rolls = [6,6]*6 + [6,6, 6,6, 6,6, 1,1, 1,5,5, 1,1, 4,4]
+        for blade in blades:
+            char = character.Character(fixRolls=rolls)
+            char.selectCareer(character.NAVY)
+            char.selectSkillTable('Personal Development')
+            char.selectSkillTable('Service Skills')
+            char.selectBladeSkillTable(blade)
+            self.assertEqual(char.skills[blade], 1)
+            char.selectSkillTable('Service Skills')
+            char.selectBladeSkillTable(blade)
+            self.assertEqual(char.skills[blade], 2)
+            char.selectReEnlist('No')
+            char.selectMusterTable('Benefits')
+            char.selectBladeBenefit(blade)
+            self.assertEqual(char.possessions[blade], 1)
+            char.selectMusterTable('Benfits')
+            char.selectBladeBenefit(blade + ' (skill)')
+            self.assertEqual(char.skills[blade], 3)
+
+    def testGunOptions(self):
+        """Test the gun options for skills and benefits."""
+        guns = ['Body Pistol', 'Auto Pistol', 'Revolver', 'Carbine', 'Rifle', 'Auto Rifle', 'Shotgun', 'SMG', 'Laser Carbine', 'Laser Rifle']
+        rolls = [6,6]*6 + [6,6, 6,6, 6,6, 1,1, 1,6,6, 1,1, 4,4]
+        for gun in guns:
+            char = character.Character(fixRolls=rolls)
+            char.selectCareer(character.MERCHANTS)
+            char.selectSkillTable('Personal Development')
+            char.selectSkillTable('Service Skills')
+            char.selectGunSkillTable(gun)
+            self.assertEqual(char.skills[gun], 1)
+            char.selectSkillTable('Service Skills')
+            char.selectGunSkillTable(gun)
+            self.assertEqual(char.skills[gun], 2)
+            char.selectReEnlist('No')
+            char.selectMusterTable('Benefits')
+            char.selectGunBenefit(gun)
+            self.assertEqual(char.possessions[gun], 1)
+            char.selectMusterTable('Benfits')
+            char.selectGunBenefit(gun + ' (skill)')
+            self.assertEqual(char.skills[gun], 3)
+            
+    def testVehicleOptions(self):
+        """Test the vehicle options for skills."""
+        vehicles = ['Ground Car', 'ATV', 'Sail Boat', 'Motor Boat', 'Submersible', 'Fixed Wing Aircraft', 'Helicopter', 'Hovercraft', 'Air/Raft', 'Grav Belt']
+        rolls = [6,6]*6 + [6,6, 6,6, 1,1, 1,1]
+        for vehicle in vehicles:
+            char = character.Character(fixRolls=rolls)
+            char.selectCareer(character.MERCHANTS)
+            char.selectSkillTable('Service Skills')
+            char.selectVehicleSkillTable(vehicle)
+            self.assertEqual(char.skills[vehicle], 1)
+            char.selectSkillTable('Service Skills')
+            char.selectVehicleSkillTable(vehicle)
+            self.assertEqual(char.skills[vehicle], 2)
+
+            
     def _checkSkillTable(self, career, tablename, expected, statRolls):
         """Check the results for one skill table."""
         rolls = statRolls + [6,6,6,6]
