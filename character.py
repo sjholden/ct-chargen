@@ -747,7 +747,7 @@ class Character(object):
                     self.possessions['Free Trader (20 years paid off)'] = 1
                     del self.possessions['Free Trader (10 years paid off)']    
                 elif 'Free Trader (0 years paid off)' in self.possessions:
-                    self.possessions['Free Trader (20 years paid off)'] = 1
+                    self.possessions['Free Trader (10 years paid off)'] = 1
                     del self.possessions['Free Trader (0 years paid off)']
                 else:
                     self.possessions['Free Trader (0 years paid off)'] = 1
