@@ -26,3 +26,4 @@ skip_files:
 - ^(.*/)?\.pydevproject$
 - env/
 - test/
+- .settings/
