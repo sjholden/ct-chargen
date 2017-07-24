@@ -558,7 +558,7 @@ class Test(unittest.TestCase):
             char.selectCareer(character.NAVY)
             while char.next_step == 'select_skill_table':
                 char.selectSkillTable('Personal Development')
-            for term in range(1, terms):
+            for _ in range(1, terms):
                 char.selectReEnlist('Yes')
                 while char.next_step == 'select_skill_table':
                     char.selectSkillTable('Personal Development')
@@ -570,6 +570,142 @@ class Test(unittest.TestCase):
                 self.assertIn('%d,000/yr Retirement Pay' % (4 + 2*(terms-5)), char.possessions)
             else:
                 self.assertFalse(char.retired)
+
+    def testAging(self):
+        """Test the aging rules."""
+        genrolls = self._getAll2DSums() * 4
+        rolls = [6] * 12
+        agerolls = []
+
+        for _ in range(1, 4):
+            rolls.extend([6,6, 6,6, 3,3])
+        for _ in range(4, 12):
+            rolls.extend([6,6, 6,6, 3,3])
+            for _ in range(3):
+                dice = genrolls.pop(0)
+                agerolls.append(sum(dice))
+                rolls.extend(dice)
+        for _ in range(12, 15):
+            rolls.extend([6,6, 6,6, 3,3])
+            for _ in range(4):
+                dice = genrolls.pop(0)
+                agerolls.append(sum(dice))
+                rolls.extend(dice)
+        char = character.Character(fixRolls=rolls)
+        char.selectCareer(character.SCOUTS)
+        for _ in range(1, 4):
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+            char.selectReEnlist('Yes')
+        for _ in range(4, 8):
+            str_, dex, end = char.stats[:3]
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+            if agerolls.pop(0) >= 8:
+                self.assertEqual(char.stats[0], str_)
+            else:
+                self.assertEqual(char.stats[0], str_-1)
+            if agerolls.pop(0) >= 7:
+                self.assertEqual(char.stats[1], dex)
+            else:
+                self.assertEqual(char.stats[1], dex-1)
+            if agerolls.pop(0) >= 8:
+                self.assertEqual(char.stats[2], end)
+            else:
+                self.assertEqual(char.stats[2], end-1)
+            char.selectReEnlist('Yes')
+        for _ in range(8, 12):
+            str_, dex, end = char.stats[:3]
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+            if agerolls.pop(0) >= 9:
+                self.assertEqual(char.stats[0], str_)
+            else:
+                self.assertEqual(char.stats[0], str_-1)
+            if agerolls.pop(0) >= 8:
+                self.assertEqual(char.stats[1], dex)
+            else:
+                self.assertEqual(char.stats[1], dex-1)
+            if agerolls.pop(0) >= 9:
+                self.assertEqual(char.stats[2], end)
+            else:
+                self.assertEqual(char.stats[2], end-1)
+            char.selectReEnlist('Yes')
+        for _ in range(12, 15):
+            str_, dex, end, intel = char.stats[:4]
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+            if agerolls.pop(0) >= 9:
+                self.assertEqual(char.stats[0], str_)
+            else:
+                self.assertEqual(char.stats[0], str_-2)
+            if agerolls.pop(0) >= 8:
+                self.assertEqual(char.stats[1], dex)
+            else:
+                self.assertEqual(char.stats[1], dex-2)
+            if agerolls.pop(0) >= 9:
+                self.assertEqual(char.stats[2], end)
+            else:
+                self.assertEqual(char.stats[2], end-2)
+            if agerolls.pop(0) >= 9:
+                self.assertEqual(char.stats[3], intel)
+            else:
+                self.assertEqual(char.stats[3], intel-1)
+            char.selectReEnlist('Yes')
+
+    def testAgingCrisis(self):
+        """Test handling of aging crisis."""
+        rolls = [1]*12 + [6,6, 6,6, 3,3]*3 + [6,6, 6,6, 3,3, 6,6, 6,6, 6,6]*8 + [6,6, 6,6, 3,3, 6,6, 6,6, 6,6, 1,1] + [6,6, 6,6, 3,3]
+        # crisis on each stats, making saving throws and 6 months recovery.
+        char = character.Character(fixRolls=rolls+[1,1,1,1,1,1,1,1, 2,6,6,2,6,6,2,6,6,2,6,6])
+        char.selectCareer(character.SCOUTS)
+        for _ in range(13):
+            char.selectReEnlist('Yes')
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+        self.assertEqual(char.stats[:4], [1,1,1,1])
+        self.assertEqual(char.age, 72)
+
+        # missing the death save for each attr.
+        char = character.Character(fixRolls=rolls+[1,1,1,1,1,1,1,1, 2,6,6,2,6,6,2,6,6,2,5])
+        char.selectCareer(character.SCOUTS)
+        for _ in range(13):
+            char.selectReEnlist('Yes')
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+        self.assertEqual(char.stats[:4], [1,1,1,0])
+        self.assertEqual(char.age, 71)
+        self.assertTrue(char.dead)
+
+        char = character.Character(fixRolls=rolls+[1,1,1,1,1,1,1,1, 2,6,6,2,6,6,2,5])
+        char.selectCareer(character.SCOUTS)
+        for _ in range(13):
+            char.selectReEnlist('Yes')
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+        self.assertEqual(char.stats[:4], [1,1,0,0])
+        self.assertEqual(char.age, 71)
+        self.assertTrue(char.dead)
+
+        char = character.Character(fixRolls=rolls+[1,1,1,1,1,1,1,1, 2,6,6,2,5])
+        char.selectCareer(character.SCOUTS)
+        for _ in range(13):
+            char.selectReEnlist('Yes')
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+        self.assertEqual(char.stats[:4], [1,0,0,0])
+        self.assertEqual(char.age, 70)
+        self.assertTrue(char.dead)
+
+        char = character.Character(fixRolls=rolls+[1,1,1,1,1,1,1,1, 2,5])
+        char.selectCareer(character.SCOUTS)
+        for _ in range(13):
+            char.selectReEnlist('Yes')
+            char.selectSkillTable('Service Skills')
+            char.selectSkillTable('Service Skills')
+        self.assertEqual(char.stats[:4], [0,0,0,0])
+        self.assertEqual(char.age, 70)
+        self.assertTrue(char.dead)
 
     def _checkSkillTable(self, career, tablename, expected, statRolls):
         """Check the results for one skill table."""
