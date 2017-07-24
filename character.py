@@ -566,7 +566,7 @@ class Character(object):
         agingCrisis = self.doAging()
         if not self.dead:
             if agingCrisis:
-                self.history.apend("Unable to reenlist due to aging crisis after %s term" % (numberToOrdinal(self.terms),))
+                self.history.append("Unable to reenlist due to aging crisis after %s term" % (numberToOrdinal(self.terms),))
                 self.startMusterOut()
             else:
                 self.next_step = 'select_reenlist'
