@@ -707,6 +707,65 @@ class Test(unittest.TestCase):
         self.assertEqual(char.age, 70)
         self.assertTrue(char.dead)
 
+    def testAlexJamisonExample(self):
+        """The example from the book.
+
+        Note book is missing a mustering out roll from rank (probably using '77 rules).
+        The Gun roll is also actually Steward, so number is changed.
+        """
+        rolls = [3,3, 4,4, 4,4, 6,6, 4,4, 4,5, 3,2, # stats and enlist
+                 5,6, 3,4, 5,5, 1,5,2,5, 3,4, # term 1
+                 1,2, 6,6, 3,6, 2,4, # term 2
+                 4,5, 4,4, 5, 5,5, # term 3
+                 1,6, 6,6, 5,6, 6,6, 2,5, 5,4, 2,5, # term 4
+                 5,2, 4,6, 5,3, 6,3, 2,4, 5,6, 1,2, # term 5
+                 4, 5, 6, 2, 6, 6, 6, 5, # mustering out
+                 ]
+        char = character.Character(fixRolls=rolls)
+        char.selectCareer(character.MERCHANTS)
+        char.selectSkillTable('Personal Development')
+        char.selectSkillTable('Personal Development')
+        char.selectBladeSkillTable('Dagger')
+        char.selectSkillTable('Service Skills')
+        char.selectSkillTable('Service Skills')
+        char.selectReEnlist('Yes')
+        char.selectSkillTable('Personal Development')
+        char.selectSkillTable('Service Skills')
+        char.selectGunSkillTable('Body Pistol')
+        char.selectReEnlist('Yes')
+        char.selectSkillTable('Service Skills')
+        char.selectReEnlist('Yes')
+        char.selectSkillTable('Personal Development')
+        char.selectBladeSkillTable('Cutlass')
+        char.selectSkillTable('Service Skills')
+        char.selectGunSkillTable('SMG')
+        char.selectReEnlist('Yes')
+        char.selectSkillTable('Advanced Education 2')
+        char.selectSkillTable('Advanced Education')
+        char.selectReEnlist('Yes')
+        char.selectMusterTable('Cash')
+        char.selectMusterTable('Benefits')
+        char.selectMusterTable('Benefits')
+        char.selectMusterTable('Benefits')
+        char.selectMusterTable('Benefits')
+        char.selectMusterTable('Benefits')
+        char.selectMusterTable('Benefits')
+        char.selectMusterTable('Benefits')
+        self.assertEqual(char.age, 38)
+        self.assertEqual(char.stats, [7,7,9,12,9,9])
+        self.assertEqual(char.terms, 5)
+        self.assertEqual(char.skills['Dagger'], 1)
+        self.assertEqual(char.skills['Cutlass'], 1)
+        self.assertEqual(char.skills['Vacc Suit'], 1)
+        self.assertEqual(char.skills['Pilot'], 2)
+        self.assertEqual(char.skills['Body Pistol'], 1)
+        self.assertEqual(char.skills['SMG'], 1)
+        self.assertEqual(char.skills['Electronic'], 3)
+        self.assertEqual(char.credits, 20000)
+        self.assertEqual(char.possessions['4,000/yr Retirement Pay'], 1)
+        self.assertEqual(char.possessions['Free Trader (30 years paid off)'], 1)
+        self.assertEqual(char.possessions['Low Psg'], 1)
+
     def _checkSkillTable(self, career, tablename, expected, statRolls):
         """Check the results for one skill table."""
         rolls = statRolls + [6,6,6,6]
