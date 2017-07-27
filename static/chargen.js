@@ -55,6 +55,9 @@ function updateCharacterData(character) {
     	});   	
 }
 
+function openSheet() {
+	window.open($SCRIPT_ROOT + '/sheet/' + $("#charid").val(), '_blank');
+}
 
 function readyNextStep(data) {
 	config = data['next_step'];
@@ -66,7 +69,8 @@ function readyNextStep(data) {
             var listItem = $("<option></option>").val(value).html(value);
             $("#inputareaselect").append(listItem);
         });
-        inputarea.append('<input type="button" id="inputareabutton" value="' + config[2] + '" />')		
+        //inputarea.append('<input type="button" id="inputareabutton" value="' + config[2] + '" />');
+        inputarea.append('<input type="button" class="button" id="inputareabutton" value="' + config[2] + '" />');
 		$('#inputareabutton').bind('click', function() {
       		$.getJSON($SCRIPT_ROOT + '/' + config[1], {
       		'charid': $("#charid").val(),
@@ -81,7 +85,8 @@ function readyNextStep(data) {
 		$("#newcharacter").prop("disabled", false);
 		inputarea = $("#inputarea");
 		inputarea.empty();
-		inputarea.append('<a target="_blank" href="' + $SCRIPT_ROOT + '/sheet/' + data['charid'] + '">Get Sheet</a>');
+		//inputarea.append('<a target="_blank" href="' + $SCRIPT_ROOT + '/sheet/' + data['charid'] + '">Get Sheet</a>');
+		inputarea.append('<input type="button" class="button" value="Get Sheet" onclick="openSheet()" />');
 	}
 }
 
