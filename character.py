@@ -252,40 +252,43 @@ class Character(object):
         character['dierolls'] = self.rolllog
         if self.dead:
             character['next_step'] = ['finished']
-        elif self.next_step == 'select_career':
-            character['next_step'] = ['select', 'select_career', 'Choose Career', DRAFT_TABLE]
-        elif self.next_step == 'select_skill_table':
-            character['next_step'] = ['select', 'select_skill_table', 'Choose Skill Table']
-            if self.stats[EDU] >= 8:
-                character['next_step'].append(SKILL_TABLE_NAMES)
-            else:
-                character['next_step'].append(SKILL_TABLE_NAMES[:-1])
-        elif self.next_step == 'select_blade_skilltable':
-            character['next_step'] = ['select', 'select_blade_skilltable', 'Choose Blade', BLADES]
-        elif self.next_step == 'select_gun_skilltable':
-            character['next_step'] = ['select', 'select_gun_skilltable', 'Choose Gun', GUNS]
-        elif self.next_step == 'select_vehicle_skilltable':
-            character['next_step'] = ['select', 'select_vehicle_skilltable', 'Choose Vehicle', VEHICLES]
-        elif self.next_step == 'select_reenlist':
-            character['next_step'] = ['select', 'select_reenlist', 'Apply to re-enlist?', ['Yes', 'No']]
-        elif self.next_step == 'select_muster_table':
-            character['next_step'] = ['select', 'select_muster_table', 'Choose Mustering Out Table', ['Benefits', 'Cash']]
-        elif self.next_step == 'select_gun_benefit':
-            guns = []
-            for gun in GUNS:
-                guns.append(gun)
-                if gun in self.possessions:
-                    guns.append(gun + ' (skill)')
-            character['next_step'] = ['select', 'select_gun_benefit', 'Choose Gun', guns]
-        elif self.next_step == 'select_blade_benefit':
-            blades = []
-            for blade in BLADES:
-                blades.append(blade)
-                if blade in self.possessions:
-                    blades.append(blade + ' (skill)')
-            character['next_step'] = ['select', 'select_blade_benefit', 'Choose Blade', blades]
-        elif self.next_step == 'finished':
-            character['next_step'] = ['finished']
+            character['dead'] = True
+        else:
+            character['dead'] = False
+            if self.next_step == 'select_career':
+                character['next_step'] = ['select', 'select_career', 'Choose Career', DRAFT_TABLE]
+            elif self.next_step == 'select_skill_table':
+                character['next_step'] = ['select', 'select_skill_table', 'Choose Skill Table']
+                if self.stats[EDU] >= 8:
+                    character['next_step'].append(SKILL_TABLE_NAMES)
+                else:
+                    character['next_step'].append(SKILL_TABLE_NAMES[:-1])
+            elif self.next_step == 'select_blade_skilltable':
+                character['next_step'] = ['select', 'select_blade_skilltable', 'Choose Blade', BLADES]
+            elif self.next_step == 'select_gun_skilltable':
+                character['next_step'] = ['select', 'select_gun_skilltable', 'Choose Gun', GUNS]
+            elif self.next_step == 'select_vehicle_skilltable':
+                character['next_step'] = ['select', 'select_vehicle_skilltable', 'Choose Vehicle', VEHICLES]
+            elif self.next_step == 'select_reenlist':
+                character['next_step'] = ['select', 'select_reenlist', 'Apply to re-enlist?', ['Yes', 'No']]
+            elif self.next_step == 'select_muster_table':
+                character['next_step'] = ['select', 'select_muster_table', 'Choose Mustering Out Table', ['Benefits', 'Cash']]
+            elif self.next_step == 'select_gun_benefit':
+                guns = []
+                for gun in GUNS:
+                    guns.append(gun)
+                    if gun in self.possessions:
+                        guns.append(gun + ' (skill)')
+                character['next_step'] = ['select', 'select_gun_benefit', 'Choose Gun', guns]
+            elif self.next_step == 'select_blade_benefit':
+                blades = []
+                for blade in BLADES:
+                    blades.append(blade)
+                    if blade in self.possessions:
+                        blades.append(blade + ' (skill)')
+                character['next_step'] = ['select', 'select_blade_benefit', 'Choose Blade', blades]
+            elif self.next_step == 'finished':
+                character['next_step'] = ['finished']
         return character
 
     def toCharacterSheet(self):

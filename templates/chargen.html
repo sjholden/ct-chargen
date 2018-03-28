@@ -6,6 +6,7 @@
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 </script>
+<script src="{{ url_for('static', filename='FileSaver.js') }}"></script>
 <script src="{{ url_for('static', filename='chargen.js') }}"></script>
 </head>
 <body>
@@ -69,6 +70,7 @@
 <span id="inputarea"></span>
 <input type="button" class="button" id="newcharacter" value="New Character" onclick="newCharacter()"/>
 <input type="button" class="button" id="randomcharacter" value="Random Character" onclick="randomCharacter()"/>
+<input type="button" class="button" id="randomcharacters" value="100 Characters" onclick="randomCharactersJson(100)"/>
 
 <table id="history">
 	<tr>

@@ -83,8 +83,10 @@ function readyNextStep(data) {
 	} else if (config[0] == 'finished') {
 		$("#newcharacter").show();
 		$("#randomcharacter").show();
+		$("#randomcharacters").show();
 		$("#newcharacter").prop("disabled", false);
 		$("#randomcharacter").prop("disabled", false);
+		$("#randomcharacters").prop("disabled", false);
 
 		inputarea = $("#inputarea");
 		inputarea.empty();
@@ -96,10 +98,12 @@ function readyNextStep(data) {
 function newCharacter() {
 	  $("#newcharacter").prop("disabled", true);
 	  $("#randomcharacter").prop("disabled", true);
+	  $("#randomcharacters").prop("disabled", true);
       $.getJSON($SCRIPT_ROOT + '/new_character', {}, function(data) {
 		updateCharacterData(data);
         $("#newcharacter").hide();
         $("#randomcharacter").hide();
+        $("#randomcharacters").hide();
         $("#history").show();
         $("#character_sheet").show();
         readyNextStep(data);
@@ -110,16 +114,38 @@ function newCharacter() {
 function randomCharacter() {
 	  $("#newcharacter").prop("disabled", true);
 	  $("#randomcharacter").prop("disabled", true);
+	  $("#randomcharacters").prop("disabled", true);
       $.getJSON($SCRIPT_ROOT + '/random_character', {}, function(data) {
 		updateCharacterData(data);
         $("#newcharacter").hide();
         $("#randomcharacter").hide();
+        $("#randomcharacters").hide();
         $("#history").show();
         $("#character_sheet").show();
         readyNextStep(data);
       });
       return true;
 }
+
+function randomCharactersJson(count) {
+	var characters = [];
+	var getCharFunc = function(data) {
+		if (!data['dead']) {
+			characters.push(data);
+		};
+		if (characters.length < count) {
+			$.getJSON($SCRIPT_ROOT + '/random_character_nosave', {}, getCharFunc);
+		} else {
+		    var blob = new Blob([JSON.stringify(characters)], {type: "text/plain;charset=utf-8"});
+		    saveAs(blob, "characters.json");
+		}
+	}
+	if (characters.length < count) {
+		$.getJSON($SCRIPT_ROOT + '/random_character_nosave', {}, getCharFunc);
+	}
+}
+
+
   $(document).ready(function(){
   		charid = $("#charid").val();
   		if (charid) {

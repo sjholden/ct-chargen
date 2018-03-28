@@ -30,6 +30,11 @@ def random_character():
     char.save()
     return jsonify(char.convertForClient())
 
+@app.route('/random_character_nosave')
+def random_character_nosave():
+    char = autogenerator.RandomGenerator().makeCharacter()
+    return jsonify(char.convertForClient())    
+
 @app.route('/load_character')
 def load_character():
     char = character.Character.load(request.args.get('charid'))
