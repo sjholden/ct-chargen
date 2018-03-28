@@ -2,6 +2,7 @@
 import logging
 from flask import Flask, jsonify, render_template, request
 import character
+import autogenerator
 
 
 app = Flask(__name__)
@@ -20,6 +21,12 @@ def sheet(charid):
 @app.route('/new_character')
 def new_character():
     char = character.Character()
+    char.save()
+    return jsonify(char.convertForClient())
+
+@app.route('/random_character')
+def random_character():
+    char = autogenerator.RandomGenerator().makeCharacter()
     char.save()
     return jsonify(char.convertForClient())
 

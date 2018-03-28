@@ -82,7 +82,10 @@ function readyNextStep(data) {
     });
 	} else if (config[0] == 'finished') {
 		$("#newcharacter").show();
+		$("#randomcharacter").show();
 		$("#newcharacter").prop("disabled", false);
+		$("#randomcharacter").prop("disabled", false);
+
 		inputarea = $("#inputarea");
 		inputarea.empty();
 		//inputarea.append('<a target="_blank" href="' + $SCRIPT_ROOT + '/sheet/' + data['charid'] + '">Get Sheet</a>');
@@ -92,16 +95,31 @@ function readyNextStep(data) {
 
 function newCharacter() {
 	  $("#newcharacter").prop("disabled", true);
+	  $("#randomcharacter").prop("disabled", true);
       $.getJSON($SCRIPT_ROOT + '/new_character', {}, function(data) {
 		updateCharacterData(data);
         $("#newcharacter").hide();
+        $("#randomcharacter").hide();
         $("#history").show();
         $("#character_sheet").show();
         readyNextStep(data);
       });
       return true;
   }
-  
+
+function randomCharacter() {
+	  $("#newcharacter").prop("disabled", true);
+	  $("#randomcharacter").prop("disabled", true);
+      $.getJSON($SCRIPT_ROOT + '/random_character', {}, function(data) {
+		updateCharacterData(data);
+        $("#newcharacter").hide();
+        $("#randomcharacter").hide();
+        $("#history").show();
+        $("#character_sheet").show();
+        readyNextStep(data);
+      });
+      return true;
+}
   $(document).ready(function(){
   		charid = $("#charid").val();
   		if (charid) {
