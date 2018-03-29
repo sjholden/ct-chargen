@@ -99,37 +99,37 @@ SKILL_TABLES = {
     NAVY: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', '+1 Intel', '+1 Educ', '+1 Social'],
         'Service Skills': [None, "Ship's Boat", 'Vacc Suit', 'Forward Observer', 'Gunnery', 'Blade Cbt', 'Gun Cbt'],
-        'Advanced Education': [None, 'Vacc Suit', 'Mechanical', 'Electronic', 'Engineering', 'Gunnery', 'Jack-of-all-Trades'],
+        'Advanced Education': [None, 'Vacc Suit', 'Mechanical', 'Electronics', 'Engineering', 'Gunnery', 'Jack-of-all-Trades'],
         'Advanced Education 2': [None, 'Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin']
         },
     MARINES: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', 'Gambling', 'Brawling', 'Blade Cbt'],
         'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Blade Cbt', 'Gun Cbt', 'Blade Cbt', 'Gun Cbt'],
-        'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronic', 'Tactics', 'Blade Cbt', 'Gun Cbt'],
+        'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronics', 'Tactics', 'Blade Cbt', 'Gun Cbt'],
         'Advanced Education 2': [None, 'Medical', 'Tactics', 'Tactics', 'Computer', 'Leader', 'Admin']
         },
     ARMY: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', 'Gambling', '+1 Educ', 'Brawling'],
         'Service Skills': [None, 'Vehicle', 'Air/Raft', 'Gun Cbt', 'Forward Observer', 'Blade Cbt', 'Gun Cbt'],
-        'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronic', 'Tactics', 'Blade Cbt', 'Gun Cbt'],
+        'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronics', 'Tactics', 'Blade Cbt', 'Gun Cbt'],
         'Advanced Education 2': [None, 'Medical', 'Tactics', 'Tactics', 'Computer', 'Leader', 'Admin']
         },
     SCOUTS: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', '+1 Intel', '+1 Educ', 'Gun Cbt'],
         'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Mechanical', 'Navigation', 'Electronics', 'Jack-of-all-Trades'],
-        'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronic', 'Jack-of-all-Trades', 'Gunnery', 'Medical'],
+        'Advanced Education': [None, 'Vehicle', 'Mechanical', 'Electronics', 'Jack-of-all-Trades', 'Gunnery', 'Medical'],
         'Advanced Education 2': [None, 'Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Jack-of-all-Trades']
         },
     MERCHANTS: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', '+1 Stren', 'Blade Cbt', 'Bribery'],
-        'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Jack-of-all-Trades', 'Steward', 'Electronic', 'Gun Cbt'],
-        'Advanced Education': [None, 'Streetwise', 'Mechanical', 'Electronic', 'Navigation', 'Gunnery', 'Medical'],
+        'Service Skills': [None, 'Vehicle', 'Vacc Suit', 'Jack-of-all-Trades', 'Steward', 'Electronics', 'Gun Cbt'],
+        'Advanced Education': [None, 'Streetwise', 'Mechanical', 'Electronics', 'Navigation', 'Gunnery', 'Medical'],
         'Advanced Education 2': [None, 'Medical', 'Navigation', 'Engineering', 'Computer', 'Pilot', 'Admin']
         },
     OTHER: {
         'Personal Development': [None, '+1 Stren', '+1 Dext', '+1 Endur', 'Blade Cbt', 'Brawling', '-1 Social'],
         'Service Skills': [None, 'Vehicle', 'Gambling', 'Brawling', 'Bribery', 'Blade Cbt', 'Gun Cbt'],
-        'Advanced Education': [None, 'Streetwise', 'Mechanical', 'Electronic', 'Gambling', 'Brawling', 'Forgery'],
+        'Advanced Education': [None, 'Streetwise', 'Mechanical', 'Electronics', 'Gambling', 'Brawling', 'Forgery'],
         'Advanced Education 2': [None, 'Medical', 'Forgery', 'Electronics', 'Computer', 'Streetwise', 'Jack-of-all-Trades']
         },
     }
